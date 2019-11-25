@@ -39,6 +39,13 @@ function getFilePath(note) {
     return path;
 }
 
+function getNoteByTitle(title){
+    let notes = getAllNotes();
+    return notes.find(n => n.title === title);
+}
+
+
 module.exports.getAllNotes = getAllNotes;
 module.exports.addNote = addNote;
 module.exports.deleteNote = deleteFile;
+module.exports.getNoteByTitle = getNoteByTitle;

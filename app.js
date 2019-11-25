@@ -4,7 +4,6 @@ var databaseHandler = require('./fileDb');
 
 var app = express();
 
-// start the server
 var server = app.listen(8000, function () {
     console.log('Listening on port 8000...')
 });
@@ -12,24 +11,26 @@ var server = app.listen(8000, function () {
 var urlencodedParser = express.urlencoded({extended: true});
 var jsonParser = express.json();
 
-// app.use(bodyParser.json());
-// app.use(express.urlencoded({ extended: true }));
-
 app.get('/home', function (req, res) {
     let filter = new model.Filter(req.query.page, req.query.pageSize, req.query.category, req.query.startDate, req.query.endDate);
     let filteredNotes = getFilteredNotes(filter);
     res.send(JSON.stringify(filteredNotes))
 });
 
+app.get('/note/:title', function(req, res){
+    let title = req.params.title;
+    let note = databaseHandler.getNoteByTitle(title);
+    res.send(JSON.stringify(note));
+});
+
 app.post('/note', jsonParser, function (req, res) {
     let note = model.Note.createFromJson(req.body);
-    // let note = new Note(req.body.title, req.body.description, req.body.isMarkdownFile, req.body.date, req.body.categories);
     databaseHandler.addNote(note);
     res.send('Wysłano');
 });
 
-app.delete('/note', function (req, res) {
-    const title = req.query.noteTitle;
+app.delete('/note/:title', function (req, res) {
+    const title = req.params.title;
     databaseHandler.deleteNote(title);
     res.send('Usunieto')
 });
