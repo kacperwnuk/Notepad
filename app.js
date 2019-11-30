@@ -4,18 +4,29 @@ var databaseHandler = require('./fileDb');
 
 var app = express();
 
-var server = app.listen(8000, function () {
-    console.log('Listening on port 8000...')
+var server = app.listen(7000, function () {
+    console.log('Listening on port 7000...')
 });
 
 var urlencodedParser = express.urlencoded({extended: true});
 var jsonParser = express.json();
 
+app.get('/', function(req, res){
+    res.send("ok");
+});
+
 app.get('/home', function (req, res) {
     let filter = new model.Filter(req.query.page, req.query.pageSize, req.query.category, req.query.startDate, req.query.endDate);
-    let filteredNotes = getFilteredNotes(filter);
-    res.send(JSON.stringify(filteredNotes))
+    let filteredNotesInfo = getFilteredNotes(filter);
+    res.send(JSON.stringify(filteredNotesInfo));
 });
+
+
+app.get('/categories', function(req, res){
+   let categories = databaseHandler.getAllCategories();
+   res.send(JSON.stringify(Array.from(categories))) 
+});
+
 
 app.get('/note/:title', function(req, res){
     let title = req.params.title;
@@ -25,8 +36,14 @@ app.get('/note/:title', function(req, res){
 
 app.post('/note', jsonParser, function (req, res) {
     let note = model.Note.createFromJson(req.body);
-    databaseHandler.addNote(note);
-    res.send('Wysłano');
+    console.log("Czesc");
+    if(databaseHandler.titleExists(note.title)){
+        res.status(400);
+        res.send("Title already exists.")
+    }else {
+        databaseHandler.addNote(note);
+        res.send('Wysłano');
+    }
 });
 
 app.delete('/note/:title', function (req, res) {
@@ -38,8 +55,7 @@ app.delete('/note/:title', function (req, res) {
 
 function getFilteredNotes(filter) {
     let notes = databaseHandler.getAllNotes();
-    notes = filterNotes(notes, filter);
-    return notes;
+    return filterNotes(notes, filter);
 }
 
 function filterNotes(notes, filter) {
@@ -56,13 +72,14 @@ function filterNotes(notes, filter) {
     if (filter.endDate !== undefined) {
         filteredNotes = filteredNotes.filter(e => e.date.getTime() <= filter.endDate.getTime());
     }
+    let totalNotes = filteredNotes.length;
 
     if (!isNaN(filter.page) && !isNaN(filter.pageSize)) {
         const start = filter.page * filter.pageSize;
         filteredNotes = filteredNotes.slice(start, start + filter.pageSize);
     }
 
-    return filteredNotes;
+    return {notes: filteredNotes, total: totalNotes};
 }
 
 

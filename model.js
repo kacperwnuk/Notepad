@@ -14,6 +14,7 @@ class Note {
         this.description = description;
         this.isMarkdownFile = isMarkdownFile;
         this.date = new Date(date);
+        this.formattedDate = this.date.getFullYear() + "/" + (this.date.getMonth() + 1) + "/" + this.date.getDate();
         this.categories = categories;
     }
 

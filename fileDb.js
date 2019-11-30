@@ -45,7 +45,28 @@ function getNoteByTitle(title){
 }
 
 
+function getAllCategories(){
+    let notes = getAllNotes();
+    let categories = new Set();
+    let note;
+    for(note of notes){
+        let category;
+        for(category of note.categories) {
+            categories.add(category)
+        }
+    }
+    return categories;
+}
+
+function titleExists(title){
+    let notes = getAllNotes();
+    return notes.find(n => n.title === title) !== undefined
+}
+
+
 module.exports.getAllNotes = getAllNotes;
 module.exports.addNote = addNote;
 module.exports.deleteNote = deleteFile;
 module.exports.getNoteByTitle = getNoteByTitle;
+module.exports.getAllCategories = getAllCategories;
+module.exports.titleExists = titleExists;
