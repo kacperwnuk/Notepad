@@ -16,7 +16,7 @@ app.get('/', function(req, res){
 });
 
 app.get('/home', function (req, res) {
-    let filter = new model.Filter(req.query.page, req.query.pageSize, req.query.category, req.query.startDate, req.query.endDate);
+    let filter = new model.Filter(req.query.page, req.query.pageSize, req.query.category, req.query.from, req.query.to);
     let filteredNotesInfo = getFilteredNotes(filter);
     res.send(JSON.stringify(filteredNotesInfo));
 });
@@ -24,7 +24,7 @@ app.get('/home', function (req, res) {
 
 app.get('/categories', function(req, res){
    let categories = databaseHandler.getAllCategories();
-   res.send(JSON.stringify(Array.from(categories))) 
+   res.send(JSON.stringify(categories)) 
 });
 
 
@@ -49,7 +49,7 @@ app.post('/note', jsonParser, function (req, res) {
 app.delete('/note/:title', function (req, res) {
     const title = req.params.title;
     databaseHandler.deleteNote(title);
-    res.send('Usunieto')
+    res.send(JSON.stringify('Usunieto'))
 });
 
 
@@ -61,22 +61,23 @@ function getFilteredNotes(filter) {
 function filterNotes(notes, filter) {
     let filteredNotes = notes;
 
-    if (filter.category !== undefined) {
+    if (filter.category !== "") {
         filteredNotes = filteredNotes.filter(e => e.categories.find(c => c === filter.category) !== undefined);
     }
 
-    if (filter.startDate !== undefined) {
+    if (filter.startDate !== "" ) {
         filteredNotes = filteredNotes.filter(e => e.date.getTime() >= filter.startDate.getTime());
     }
 
-    if (filter.endDate !== undefined) {
+    if (filter.endDate !== "") {
         filteredNotes = filteredNotes.filter(e => e.date.getTime() <= filter.endDate.getTime());
     }
     let totalNotes = filteredNotes.length;
 
     if (!isNaN(filter.page) && !isNaN(filter.pageSize)) {
-        const start = filter.page * filter.pageSize;
-        filteredNotes = filteredNotes.slice(start, start + filter.pageSize);
+        const start = (filter.page - 1) * filter.pageSize;
+        const end = start + filter.pageSize < totalNotes ? start + filter.pageSize : totalNotes; 
+        filteredNotes = filteredNotes.slice(start, end);
     }
 
     return {notes: filteredNotes, total: totalNotes};

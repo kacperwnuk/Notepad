@@ -39,26 +39,26 @@ function getFilePath(note) {
     return path;
 }
 
-function getNoteByTitle(title){
+function getNoteByTitle(title) {
     let notes = getAllNotes();
     return notes.find(n => n.title === title);
 }
 
 
-function getAllCategories(){
+function getAllCategories() {
     let notes = getAllNotes();
     let categories = new Set();
     let note;
-    for(note of notes){
+    for (note of notes) {
         let category;
-        for(category of note.categories) {
+        for (category of note.categories) {
             categories.add(category)
         }
     }
-    return categories;
+    return {categories: Array.from(categories)};
 }
 
-function titleExists(title){
+function titleExists(title) {
     let notes = getAllNotes();
     return notes.find(n => n.title === title) !== undefined
 }
