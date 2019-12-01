@@ -36,20 +36,27 @@ app.get('/note/:title', function(req, res){
 
 app.post('/note', jsonParser, function (req, res) {
     let note = model.Note.createFromJson(req.body);
-    console.log("Czesc");
     if(databaseHandler.titleExists(note.title)){
         res.status(400);
-        res.send("Title already exists.")
+        res.send(JSON.stringify("Title already exists."))
     }else {
         databaseHandler.addNote(note);
-        res.send('Wysłano');
+        res.send(JSON.stringify('Note added'));
     }
 });
+
+app.put('/note', jsonParser, function(req, res){
+   let note = model.Note.createFromJson(req.body);
+   databaseHandler.deleteNote(note.title);
+   databaseHandler.addNote(note);
+   res.send(JSON.stringify('Note edited'));
+});
+
 
 app.delete('/note/:title', function (req, res) {
     const title = req.params.title;
     databaseHandler.deleteNote(title);
-    res.send(JSON.stringify('Usunieto'))
+    res.send(JSON.stringify('Note deleted'))
 });
 
 

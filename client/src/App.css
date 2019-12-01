@@ -1,5 +1,8 @@
 .App {
   text-align: center;
+  margin-top: 2%;
+  margin-left: 7%;
+  margin-right: 7%;
 }
 
 .App-logo {
@@ -19,4 +22,13 @@
 
 .App-link {
   color: #09d3ac;
+}
+
+.list-group{
+  max-height: 250px;
+  overflow:scroll;
+}
+.form-group{
+  margin-bottom: 1%;
+  margin-top: 1%;
 }

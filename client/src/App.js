@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import logo from './logo.svg';
+
 import './App.css';
 
 
@@ -115,9 +115,19 @@ class App extends Component {
 
     deleteNote = (title) => {
         this.callBackend(`/note/${title}`, "delete");
+        
+        this.callBackend('/categories')
+            .then(data => this.setState(data))
+            .catch(err => console.log(err));
+        
         this.updateData();
     };
 
+    formatDate = (stringDate, separator) => {
+        const date = new Date(stringDate);
+        return date.getFullYear() + separator + (date.getMonth() + 1 > 9 ? date.getMonth() + 1 : "0" + (date.getMonth() + 1)) + separator + date.getDate();
+    };
+    
     GetCategories() {
         let cats = this.state.categories;
         let categories = [<option> </option>];
@@ -135,10 +145,10 @@ class App extends Component {
 
         for (let i = 0; i < ns.length; i++) {
             notes.push(<tr>
-                <td>{ns[i].formattedDate}</td>
+                <td>{this.formatDate(ns[i].date, '/')}</td>
                 <td>{ns[i].title}</td>
                 <td>
-                    <button className="btn btn-primary">Edit</button>
+                    <a href={`/noteEditor/${ns[i].title}`} className="btn btn-primary">Edit</a>
                 </td>
                 <td>
                     <button className="btn btn-danger" onClick={this.deleteNote.bind(this, ns[i].title)}>Delete</button>
@@ -176,14 +186,6 @@ class App extends Component {
 
     render() {
         return (
-            <html lang="en">
-            <head>
-                <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
-                      integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
-                      crossOrigin="anonymous"/>
-                <title>Notatnik</title>
-            </head>
-            <body>
             <div className="App">
                 <div className="p-5 border">
                     <div className="p-3 border">
@@ -204,7 +206,7 @@ class App extends Component {
                     </table>
                     <div className="row">
                         <div className="col-sm-4">
-                            <button className="btn btn-success">Add</button>
+                            <a href="/noteEditor" className="btn btn-success">Add</a>
                         </div>
                         <div className="col-sm-3" style={{textAlign: 'right'}}>
                             <button id='previous' className="btn btn-secondary" onClick={this.getPage.bind(this, -1)}
@@ -221,15 +223,12 @@ class App extends Component {
                         </div>
 
                     </div>
+                   
                 </div>
-
-
             </div>
-            </body>
-            </html>
         );
     }
 }
 
-
 export default App;
+
