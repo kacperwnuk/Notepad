@@ -11,7 +11,7 @@ var server = app.listen(7000, function () {
 var urlencodedParser = express.urlencoded({extended: true});
 var jsonParser = express.json();
 
-app.get('/', function(req, res){
+app.get('/', function (req, res) {
     res.send("ok");
 });
 
@@ -22,34 +22,48 @@ app.get('/home', function (req, res) {
 });
 
 
-app.get('/categories', function(req, res){
-   let categories = databaseHandler.getAllCategories();
-   res.send(JSON.stringify(categories)) 
+app.get('/categories', function (req, res) {
+    let categories = databaseHandler.getAllCategories();
+    res.send(JSON.stringify(categories))
 });
 
 
-app.get('/note/:title', function(req, res){
+app.get('/note/:title', function (req, res) {
     let title = req.params.title;
     let note = databaseHandler.getNoteByTitle(title);
+    if(note === undefined){
+        res.status(400);
+        res.send(JSON.stringify(`There is no note with title ${title} in db.`))
+    }
     res.send(JSON.stringify(note));
 });
 
 app.post('/note', jsonParser, function (req, res) {
-    let note = model.Note.createFromJson(req.body);
-    if(databaseHandler.titleExists(note.title)){
+    try {
+        let note = model.Note.createFromJson(req.body);
+        if (databaseHandler.titleExists(note.title)) {
+            res.status(400);
+            res.send(JSON.stringify("Title already exists."))
+        } else {
+            databaseHandler.addNote(note);
+            res.send(JSON.stringify('Note added'));
+        }
+    } catch (err) {
         res.status(400);
-        res.send(JSON.stringify("Title already exists."))
-    }else {
-        databaseHandler.addNote(note);
-        res.send(JSON.stringify('Note added'));
+        res.send(err);
     }
 });
 
-app.put('/note', jsonParser, function(req, res){
-   let note = model.Note.createFromJson(req.body);
-   databaseHandler.deleteNote(note.title);
-   databaseHandler.addNote(note);
-   res.send(JSON.stringify('Note edited'));
+app.put('/note', jsonParser, function (req, res) {
+    try {
+        let note = model.Note.createFromJson(req.body);
+        databaseHandler.deleteNote(note.title);
+        databaseHandler.addNote(note);
+        res.send(JSON.stringify('Note edited'));
+    } catch (err) {
+        res.status(400);
+        res.send(err);
+    }
 });
 
 
@@ -72,7 +86,7 @@ function filterNotes(notes, filter) {
         filteredNotes = filteredNotes.filter(e => e.categories.find(c => c === filter.category) !== undefined);
     }
 
-    if (filter.startDate !== "" ) {
+    if (filter.startDate !== "") {
         filteredNotes = filteredNotes.filter(e => e.date.getTime() >= filter.startDate.getTime());
     }
 
@@ -83,7 +97,7 @@ function filterNotes(notes, filter) {
 
     if (!isNaN(filter.page) && !isNaN(filter.pageSize)) {
         const start = (filter.page - 1) * filter.pageSize;
-        const end = start + filter.pageSize < totalNotes ? start + filter.pageSize : totalNotes; 
+        const end = start + filter.pageSize < totalNotes ? start + filter.pageSize : totalNotes;
         filteredNotes = filteredNotes.slice(start, end);
     }
 

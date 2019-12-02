@@ -1,0 +1,5 @@
+node app.js -> start server
+npm start -> start client
+
+node
+v12.13.1

@@ -14,11 +14,13 @@ class Note {
         this.description = description;
         this.isMarkdownFile = isMarkdownFile;
         this.date = new Date(date);
-        // this.formattedDate = 
         this.categories = categories;
     }
 
     static createFromJson = function (jsonObject) {
+        if(jsonObject.title === undefined){
+            throw new Error('Title can`t be undefined!');
+        }
         return new Note(jsonObject.title, jsonObject.description, jsonObject.isMarkdownFile, jsonObject.date, jsonObject.categories);
     };
 }

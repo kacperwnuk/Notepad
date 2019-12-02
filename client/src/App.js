@@ -16,7 +16,6 @@ class App extends Component {
 
     generateDefaultState = () => {
         return {
-            //page, from, to, category,
             page: 1,
             pageSize: 2,
             maxPages: 1,

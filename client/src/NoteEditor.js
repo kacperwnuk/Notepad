@@ -12,7 +12,8 @@ class NoteEditor extends Component {
             isMarkdownFile: false,
             description: "",
             date: "",
-            categories: []
+            categories: [],
+            newCategory: ""
         };
         
     }
@@ -49,7 +50,7 @@ class NoteEditor extends Component {
     };
     
     addCategory = () => {
-        const category = document.getElementById('category').value;
+        const category = this.state.newCategory;
         const categories = this.state.categories;
         if(!categories.find(c => c === category)){
             this.setState(state => {
@@ -84,7 +85,7 @@ class NoteEditor extends Component {
         this.callBackend('/note', method, note)
             .then(response => this.props.history.push('/'))
             .catch(err => {
-                alert(err);
+                alert("Title already exists.");
             });
     };
     
@@ -160,10 +161,10 @@ class NoteEditor extends Component {
                         <p>Category name</p>
                     </div>
                     <div className="form-group col-sm-3">
-                        <input id="category" type="text"/>
+                        <input id="newCategory" type="text" onChange={e => this.updateState(e)}/>
                     </div>
                     <div className="form-group col-sm-1">
-                        <button className="btn btn-success" onClick={this.addCategory.bind(this)}> Add</button>
+                        <button className="btn btn-success" disabled={this.state.newCategory === ""} onClick={this.addCategory.bind(this)}> Add</button>
                     </div>
                 </div>
     

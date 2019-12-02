@@ -6,11 +6,7 @@ import NoteEditor from './NoteEditor';
 import * as serviceWorker from './serviceWorker';
 import {
     BrowserRouter as Router,
-    Switch,
-    Route,
-    Link,
-    useParams,
-    useRouteMatch
+    Route
 } from "react-router-dom";
 
 const routing = (
