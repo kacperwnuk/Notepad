@@ -1,5 +1,5 @@
 node app.js -> start server
 npm start -> start client
-
+npm ci -> pobieranie node_modules
 node
 v12.13.1
