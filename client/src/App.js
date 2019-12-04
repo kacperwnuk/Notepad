@@ -16,7 +16,7 @@ class App extends Component {
 
     generateDefaultState = () => {
         return {
-            page: 1,
+            page: localStorage.getItem('page') === null ? 1 : this.parseCache(localStorage.getItem('page'), parseInt, 1),
             pageSize: 2,
             maxPages: 1,
             category: localStorage.getItem('category') === null ? "" : localStorage.getItem('category'),
@@ -26,7 +26,16 @@ class App extends Component {
             categories: []
         };
     };
-
+    
+    parseCache = (stringData, parseFun, defaultValue) => {
+        try {
+            return parseFun(stringData);
+        } catch (err) {
+            console.log(err);
+            return defaultValue;
+        }
+    };
+    
     componentDidMount() {
         this.updateData();
 
@@ -86,7 +95,8 @@ class App extends Component {
         this.setState((state, props) => ({
             page: state.page + offset
         }), () => {
-            this.updateData()
+            this.updateData();
+            localStorage.setItem('page', this.state.page);
         });
     }
     
