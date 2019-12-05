@@ -91,7 +91,7 @@ class NoteEditor extends Component {
     
     formatDate = (stringDate, separator) => {
         const date = new Date(stringDate);
-        return date.getFullYear() + separator + (date.getMonth() + 1 > 9 ? date.getMonth() + 1 : "0" + (date.getMonth() + 1)) + separator + date.getDate();
+        return date.getFullYear() + separator + (date.getMonth() + 1 > 9 ? date.getMonth() + 1 : "0" + (date.getMonth() + 1)) + separator + (date.getDate() < 10 ? "0" + date.getDate() : date.getDate());
     };
 
     deleteCategory = category => {
