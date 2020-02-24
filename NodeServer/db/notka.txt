@@ -1,0 +1,1 @@
+{"title":"notka","description":"treść notki","isMarkdownFile":false,"date":"2019-09-18T00:00:00.000Z","categories":["pierwsza","druga"]}

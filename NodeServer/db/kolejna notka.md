@@ -1,0 +1,1 @@
+{"title":"kolejna notka","description":"tu wpisz treść","isMarkdownFile":true,"date":"2020-09-20","categories":["pierwsza","druga"]}
