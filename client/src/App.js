@@ -17,7 +17,7 @@ class App extends Component {
     generateDefaultState = () => {
         return {
             page: localStorage.getItem('page') === null ? 1 : this.parseCache(localStorage.getItem('page'), parseInt, 1),
-            pageSize: 2,
+            pageSize: 4,
             maxPages: 1,
             category: localStorage.getItem('category') === null ? "" : localStorage.getItem('category'),
             from: localStorage.getItem('from') === null ? "" : localStorage.getItem('from'),
@@ -85,7 +85,7 @@ class App extends Component {
 
     updateData = () => {
         const queryString = this.getQueryString();
-        this.callBackend(`/home?${queryString}`)
+        this.callBackend(`/notes?${queryString}`)
             .then(data => this.setState(data))
             .then(() => this.setState({maxPages: Math.ceil(this.state.total / this.state.pageSize)}))
             .catch(err => console.log(err));
@@ -104,7 +104,7 @@ class App extends Component {
         localStorage.clear();
         this.setState((state, props) => ({
             page: 1,
-            pageSize: 2,
+            pageSize: 4,
             maxPages: 1,
             category: "",
             from: "",

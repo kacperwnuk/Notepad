@@ -1,1 +1,0 @@
-{"title":"test","description":"tu wpisz treść","isMarkdownFile":true,"date":"2017-11-11","categories":["pierwsza","trzecia"]}

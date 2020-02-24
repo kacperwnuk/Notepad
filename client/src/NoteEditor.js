@@ -82,7 +82,7 @@ class NoteEditor extends Component {
         } else {
             method = 'post'
         }
-        this.callBackend('/note', method, note)
+        this.callBackend('/notes', method, note)
             .then(response => this.props.history.push('/'))
             .catch(err => {
                 alert("Title already exists.");

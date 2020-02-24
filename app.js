@@ -4,8 +4,8 @@ var databaseHandler = require('./fileDb');
 
 var app = express();
 
-var server = app.listen(7000, function () {
-    console.log('Listening on port 7000...')
+var server = app.listen(5000, function () {
+    console.log('Listening on port 5000...')
 });
 
 var urlencodedParser = express.urlencoded({extended: true});
@@ -15,7 +15,7 @@ app.get('/', function (req, res) {
     res.send("ok");
 });
 
-app.get('/home', function (req, res) {
+app.get('/notes', function (req, res) {
     let filter = new model.Filter(req.query.page, req.query.pageSize, req.query.category, req.query.from, req.query.to);
     let filteredNotesInfo = getFilteredNotes(filter);
     res.send(JSON.stringify(filteredNotesInfo));
@@ -38,7 +38,7 @@ app.get('/note/:title', function (req, res) {
     res.send(JSON.stringify(note));
 });
 
-app.post('/note', jsonParser, function (req, res) {
+app.post('/notes', jsonParser, function (req, res) {
     try {
         let note = model.Note.createFromJson(req.body);
         if (databaseHandler.titleExists(note.title)) {
@@ -54,7 +54,7 @@ app.post('/note', jsonParser, function (req, res) {
     }
 });
 
-app.put('/note', jsonParser, function (req, res) {
+app.put('/notes', jsonParser, function (req, res) {
     try {
         let note = model.Note.createFromJson(req.body);
         databaseHandler.deleteNote(note.title);
